@@ -168,9 +168,75 @@ body::before {
     box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.25);
 }
 
+.hover-scale {
+    transition: transform 0.2s ease;
+}
+
+.hover-scale:hover {
+    transform: scale(1.2);
+}
+
 select option {
     background-color: white;
     color: #000000 !important;
+}
+
+/* Theme Utilities */
+.bg-primary {
+    background-color: var(--primary) !important;
+}
+.text-primary {
+    color: var(--primary) !important;
+}
+.bg-secondary {
+    background-color: var(--secondary) !important;
+}
+.text-secondary {
+    color: var(--secondary) !important;
+}
+
+/* Table Style Fixes */
+.glass-panel table, 
+.table-responsive,
+.table {
+    background-color: transparent !important;
+    --bs-table-bg: transparent !important;
+    --bs-table-accent-bg: transparent !important;
+    --bs-table-striped-bg: transparent !important;
+    --bs-table-hover-bg: rgba(255, 255, 255, 0.05) !important;
+    color: white !important;
+}
+
+.glass-panel {
+    background: #064e3b !important; /* Solid dark green turf color */
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+}
+
+.glass-panel .table thead th {
+    color: var(--primary) !important;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 1.5px;
+    background: rgba(0, 0, 0, 0.2) !important;
+    border-bottom: 2px solid var(--primary) !important;
+}
+
+.glass-panel .table tbody td {
+    color: #ffffff !important;
+    padding: 1.25rem 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    vertical-align: middle;
+}
+
+.badge {
+    color: #ffffff !important; /* Always white text on badges */
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.08) !important;
 }
 
 /* Card Improvements */
