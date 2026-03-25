@@ -1,0 +1,200 @@
+:root {
+    --primary: #22c55e; /* Grass Green */
+    --primary-hover: #16a34a;
+    --secondary: #fbbf24; /* Golden highlight */
+    --accent: #f8fafc; /* Pitch Line White */
+    --background: #052e16; /* Deep Turf Green */
+    --surface: rgba(20, 83, 45, 0.7); /* Translucent Turf */
+    --text: #f8fafc;
+    --text-muted: #d1fae5;
+    --glass: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.15);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+    --pitch-line: rgba(255, 255, 255, 0.3);
+}
+
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+.lead {
+    color: var(--text-muted);
+}
+
+body {
+    background: radial-gradient(circle at top right, #064e3b, #052e16);
+    background-attachment: fixed;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    position: relative;
+}
+
+/* Pitch Texture Overlay */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Glassmorphism Utilities */
+.glass-panel {
+    background: var(--glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    box-shadow: var(--glass-shadow);
+}
+
+.glass-card {
+    background: var(--surface);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+    overflow: hidden;
+}
+
+.glass-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 15px 45px 0 rgba(0, 0, 0, 0.6);
+    border-color: var(--primary);
+}
+
+/* Navbar */
+.navbar-glass {
+    background: rgba(5, 46, 22, 0.85);
+    backdrop-filter: blur(15px);
+    border-bottom: 2px solid var(--pitch-line);
+    padding: 0.8rem 0;
+}
+
+.navbar-brand {
+    font-weight: 900;
+    font-size: 1.6rem;
+    letter-spacing: -0.5px;
+    background: linear-gradient(to right, #ffffff, var(--primary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Buttons */
+.btn-modern {
+    padding: 0.7rem 1.8rem;
+    border-radius: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+}
+
+.btn-primary-modern {
+    background: linear-gradient(135deg, var(--primary), #15803d);
+    color: white;
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+}
+
+.btn-primary-modern:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(34, 197, 94, 0.5);
+    color: white;
+}
+
+.btn-outline-modern {
+    background: transparent;
+    border: 2px solid var(--glass-border);
+    color: var(--text);
+}
+
+.btn-outline-modern:hover {
+    background: var(--glass);
+    border-color: var(--primary);
+    transform: translateY(-2px);
+}
+
+/* Hero Section */
+.hero-section {
+    padding: 120px 0 80px;
+    text-align: center;
+    background: radial-gradient(circle at center, rgba(34, 197, 94, 0.15) 0%, transparent 70%);
+}
+
+.hero-title {
+    font-size: 4.5rem;
+    font-weight: 950;
+    margin-bottom: 2rem;
+    line-height: 1;
+    letter-spacing: -2px;
+}
+
+.text-gradient {
+    background: linear-gradient(to right, #ffffff, var(--primary), var(--secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Forms */
+.form-control {
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid var(--glass-border);
+    color: white !important;
+    border-radius: 14px;
+    padding: 0.85rem 1.4rem;
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.form-control:focus {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.25);
+}
+
+select option {
+    background-color: white;
+    color: #000000 !important;
+}
+
+/* Card Improvements */
+.card-img-modern {
+    border-radius: 16px 16px 0 0;
+    transition: transform 0.6s cubic-bezier(0.33, 1, 0.68, 1);
+}
+
+.glass-card:hover .card-img-modern {
+    transform: scale(1.08);
+}
+
+.price-tag {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--secondary);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Badge Styling */
+.badge {
+    padding: 0.5rem 0.8rem;
+    font-weight: 600;
+    border-radius: 8px;
+}
