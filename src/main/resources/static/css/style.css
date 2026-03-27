@@ -264,3 +264,145 @@ select option {
     font-weight: 600;
     border-radius: 8px;
 }
+
+.alert-success,
+.alert-danger {
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.booking-panel {
+    position: sticky;
+    top: 100px;
+}
+
+.booking-summary {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 1rem 1.25rem;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.65rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.summary-row:last-child {
+    border-bottom: none;
+}
+
+.booked-slots-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.slot-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.65rem 0.9rem;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.92rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.slot-chip-approved {
+    background: rgba(248, 113, 113, 0.14);
+    color: #fecaca;
+}
+
+.slot-chip-pending {
+    background: rgba(251, 191, 36, 0.14);
+    color: #fde68a;
+}
+
+.slot-chip-free {
+    background: rgba(34, 197, 94, 0.14);
+    color: #bbf7d0;
+}
+
+.slot-chip-error {
+    background: rgba(248, 113, 113, 0.14);
+    color: #fecaca;
+}
+
+.booking-availability-message {
+    min-height: 24px;
+    font-weight: 600;
+}
+
+.availability-success {
+    color: #bbf7d0;
+}
+
+.availability-error {
+    color: #fecaca;
+}
+
+.status-badge {
+    min-width: 120px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.status-pending {
+    background: rgba(251, 191, 36, 0.2) !important;
+    color: #fde68a !important;
+}
+
+.status-approved {
+    background: rgba(34, 197, 94, 0.2) !important;
+    color: #bbf7d0 !important;
+}
+
+.status-cancelled {
+    background: rgba(248, 113, 113, 0.2) !important;
+    color: #fecaca !important;
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.detail-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 1rem 1.1rem;
+}
+
+.detail-label {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 0.35rem;
+}
+
+.detail-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.detail-subvalue {
+    color: var(--text-muted);
+    margin-top: 0.2rem;
+}
+
+@media (max-width: 991.98px) {
+    .booking-panel {
+        position: static;
+        top: auto;
+    }
+
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+}

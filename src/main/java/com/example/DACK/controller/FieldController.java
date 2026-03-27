@@ -1,5 +1,6 @@
 package com.example.DACK.controller;
 
+import com.example.DACK.dto.BookingRequest;
 import com.example.DACK.model.Field;
 import com.example.DACK.service.FieldService;
 import com.example.DACK.service.FileStorageService;
@@ -8,6 +9,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
+import java.util.stream.IntStream;
 
 @Controller
 @RequiredArgsConstructor
@@ -27,7 +33,16 @@ public class FieldController {
 
     @GetMapping("/fields/{id}")
     public String fieldDetails(@PathVariable Long id, Model model) {
-        model.addAttribute("field", fieldService.getFieldById(id).orElse(null));
+        Field field = fieldService.getFieldById(id).orElse(null);
+        BookingRequest bookingRequest = new BookingRequest();
+        bookingRequest.setFieldId(id);
+        bookingRequest.setBookingDate(LocalDate.now());
+        bookingRequest.setStartTime(LocalTime.of(18, 0));
+        bookingRequest.setEndTime(LocalTime.of(19, 0));
+
+        model.addAttribute("field", field);
+        model.addAttribute("bookingForm", bookingRequest);
+        model.addAttribute("today", LocalDate.now());
         return "field_detail";
     }
 
@@ -45,8 +60,9 @@ public class FieldController {
     }
 
     @PostMapping("/admin/fields/save")
-    public String saveField(@ModelAttribute Field field, @RequestParam("imageFile") MultipartFile imageFile) {
-        if (!imageFile.isEmpty()) {
+    public String saveField(@ModelAttribute Field field,
+            @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) {
+        if (imageFile != null && !imageFile.isEmpty()) {
             String imageUrl = fileStorageService.storeFile(imageFile);
             field.setImageUrl(imageUrl);
         }
@@ -64,5 +80,12 @@ public class FieldController {
     public String deleteField(@PathVariable Long id) {
         fieldService.deleteField(id);
         return "redirect:/admin/fields";
+    }
+
+    @ModelAttribute("bookingTimeOptions")
+    public List<LocalTime> bookingTimeOptions() {
+        return IntStream.rangeClosed(5, 23)
+                .mapToObj(hour -> LocalTime.of(hour, 0))
+                .toList();
     }
 }
