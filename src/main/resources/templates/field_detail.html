@@ -78,7 +78,13 @@
 
                             <div class="mb-3">
                                 <label class="form-label">Ngày đá</label>
-                                <input type="date" th:field="*{bookingDate}" class="form-control" th:min="${today}" required id="bookingDateInput">
+                                <input type="date"
+                                       name="bookingDate"
+                                       th:value="${bookingDateValue}"
+                                       class="form-control"
+                                       th:min="${#temporals.format(today, 'yyyy-MM-dd')}"
+                                       required
+                                       id="bookingDateInput">
                             </div>
 
                             <div class="row g-3">
@@ -157,146 +163,146 @@
             <h3 class="fw-bold mb-3">Không tìm thấy sân bóng</h3>
             <a href="/" class="btn btn-modern btn-primary-modern">Quay về trang chủ</a>
         </div>
-    </div>
-    <script th:inline="javascript">
-        (() => {
-            const slotsContainer = document.getElementById('bookedSlotsContainer');
-            const dateInput = document.getElementById('bookingDateInput');
-            const startSelect = document.getElementById('startTimeSelect');
-            const endSelect = document.getElementById('endTimeSelect');
-            const caption = document.getElementById('bookingSlotsCaption');
-            const message = document.getElementById('bookingAvailabilityMessage');
-            const submitButton = document.getElementById('bookingSubmitButton');
+        <script>
+            (() => {
+                const slotsContainer = document.getElementById('bookedSlotsContainer');
+                const dateInput = document.getElementById('bookingDateInput');
+                const startSelect = document.getElementById('startTimeSelect');
+                const endSelect = document.getElementById('endTimeSelect');
+                const caption = document.getElementById('bookingSlotsCaption');
+                const message = document.getElementById('bookingAvailabilityMessage');
+                const submitButton = document.getElementById('bookingSubmitButton');
 
-            if (!slotsContainer || !dateInput || !startSelect || !endSelect || !caption || !message || !submitButton) {
-                return;
-            }
-
-            const slotsUrl = slotsContainer.dataset.slotsUrl;
-            let bookedSlots = [];
-
-            function toMinutes(value) {
-                if (!value) {
-                    return null;
-                }
-                const [hours, minutes] = value.split(':').map(Number);
-                return (hours * 60) + minutes;
-            }
-
-            function renderBookedSlots() {
-                if (!bookedSlots.length) {
-                    slotsContainer.innerHTML = '<span class="slot-chip slot-chip-free">Ngay hien tai chua co khung gio nao duoc dat.</span>';
+                if (!slotsContainer || !dateInput || !startSelect || !endSelect || !caption || !message || !submitButton) {
                     return;
                 }
 
-                slotsContainer.innerHTML = bookedSlots.map(slot => `
-                    <span class="slot-chip ${slot.status === 'APPROVED' ? 'slot-chip-approved' : 'slot-chip-pending'}">
-                        ${slot.startTime} - ${slot.endTime} • ${slot.statusLabel}
-                    </span>
-                `).join('');
-            }
+                const slotsUrl = slotsContainer.dataset.slotsUrl;
+                let bookedSlots = [];
 
-            function updateSelectOptions() {
-                const slotRanges = bookedSlots.map(slot => ({
-                    start: toMinutes(slot.startTime),
-                    end: toMinutes(slot.endTime)
-                }));
+                function toMinutes(value) {
+                    if (!value) {
+                        return null;
+                    }
+                    const [hours, minutes] = value.split(':').map(Number);
+                    return (hours * 60) + minutes;
+                }
 
-                Array.from(startSelect.options).forEach(option => {
-                    if (!option.value) {
+                function renderBookedSlots() {
+                    if (!bookedSlots.length) {
+                        slotsContainer.innerHTML = '<span class="slot-chip slot-chip-free">Ngày này hiện chưa có khung giờ nào được đặt.</span>';
                         return;
                     }
-                    const current = toMinutes(option.value);
-                    option.disabled = slotRanges.some(slot => current >= slot.start && current < slot.end);
-                });
 
-                Array.from(endSelect.options).forEach(option => {
-                    if (!option.value) {
-                        return;
-                    }
-                    const current = toMinutes(option.value);
-                    option.disabled = slotRanges.some(slot => current > slot.start && current <= slot.end);
-                });
-            }
-
-            function validateSelectedRange() {
-                const start = toMinutes(startSelect.value);
-                const end = toMinutes(endSelect.value);
-
-                message.textContent = '';
-                message.className = 'booking-availability-message mt-2';
-                submitButton.disabled = false;
-
-                if (start === null || end === null) {
-                    return;
+                    slotsContainer.innerHTML = bookedSlots.map(slot => `
+                        <span class="slot-chip ${slot.status === 'APPROVED' ? 'slot-chip-approved' : 'slot-chip-pending'}">
+                            ${slot.startTime} - ${slot.endTime} • ${slot.statusLabel}
+                        </span>
+                    `).join('');
                 }
 
-                if (start >= end) {
-                    message.textContent = 'Giờ kết thúc phải sau giờ bắt đầu.';
-                    message.classList.add('availability-error');
-                    submitButton.disabled = true;
-                    return;
-                }
+                function updateSelectOptions() {
+                    const slotRanges = bookedSlots.map(slot => ({
+                        start: toMinutes(slot.startTime),
+                        end: toMinutes(slot.endTime)
+                    }));
 
-                const isOverlap = bookedSlots.some(slot => {
-                    const slotStart = toMinutes(slot.startTime);
-                    const slotEnd = toMinutes(slot.endTime);
-                    return start < slotEnd && end > slotStart;
-                });
-
-                if (isOverlap) {
-                    message.textContent = 'Khung giờ bạn chọn đang trùng với đơn đã có trước đó.';
-                    message.classList.add('availability-error');
-                    submitButton.disabled = true;
-                    return;
-                }
-
-                message.textContent = 'Khung giờ này hiện đang trống, bạn có thể gửi yêu cầu đặt sân.';
-                message.classList.add('availability-success');
-            }
-
-            async function loadBookedSlots() {
-                const selectedDate = dateInput.value;
-                if (!selectedDate) {
-                    slotsContainer.innerHTML = '';
-                    caption.textContent = 'Vui lòng chọn ngày đá';
-                    return;
-                }
-
-                caption.textContent = 'Dang tai danh sach khung gio...';
-
-                try {
-                    const response = await fetch(`${slotsUrl}?date=${selectedDate}`, {
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
+                    Array.from(startSelect.options).forEach(option => {
+                        if (!option.value) {
+                            return;
                         }
+                        const current = toMinutes(option.value);
+                        option.disabled = slotRanges.some(slot => current >= slot.start && current < slot.end);
                     });
 
-                    if (!response.ok) {
-                        throw new Error('Không thể tải khung giờ đã đặt.');
+                    Array.from(endSelect.options).forEach(option => {
+                        if (!option.value) {
+                            return;
+                        }
+                        const current = toMinutes(option.value);
+                        option.disabled = slotRanges.some(slot => current > slot.start && current <= slot.end);
+                    });
+                }
+
+                function validateSelectedRange() {
+                    const start = toMinutes(startSelect.value);
+                    const end = toMinutes(endSelect.value);
+
+                    message.textContent = '';
+                    message.className = 'booking-availability-message mt-2';
+                    submitButton.disabled = false;
+
+                    if (start === null || end === null) {
+                        return;
                     }
 
-                    bookedSlots = await response.json();
-                    caption.textContent = bookedSlots.length
-                        ? `Da cap nhat ${bookedSlots.length} khung gio da dat`
-                        : 'Ngay nay dang trong lich';
-                    renderBookedSlots();
-                    updateSelectOptions();
-                    validateSelectedRange();
-                } catch (error) {
-                    bookedSlots = [];
-                    slotsContainer.innerHTML = '<span class="slot-chip slot-chip-error">Khong tai duoc lich da dat. Vui long thu lai.</span>';
-                    caption.textContent = 'Khong the tai lich';
-                    validateSelectedRange();
+                    if (start >= end) {
+                        message.textContent = 'Giờ kết thúc phải sau giờ bắt đầu.';
+                        message.classList.add('availability-error');
+                        submitButton.disabled = true;
+                        return;
+                    }
+
+                    const isOverlap = bookedSlots.some(slot => {
+                        const slotStart = toMinutes(slot.startTime);
+                        const slotEnd = toMinutes(slot.endTime);
+                        return start < slotEnd && end > slotStart;
+                    });
+
+                    if (isOverlap) {
+                        message.textContent = 'Khung giờ bạn chọn đang trùng với đơn đã có trước đó.';
+                        message.classList.add('availability-error');
+                        submitButton.disabled = true;
+                        return;
+                    }
+
+                    message.textContent = 'Khung giờ này hiện đang trống, bạn có thể gửi yêu cầu đặt sân.';
+                    message.classList.add('availability-success');
                 }
-            }
 
-            dateInput.addEventListener('change', loadBookedSlots);
-            startSelect.addEventListener('change', validateSelectedRange);
-            endSelect.addEventListener('change', validateSelectedRange);
+                async function loadBookedSlots() {
+                    const selectedDate = dateInput.value;
+                    if (!selectedDate) {
+                        slotsContainer.innerHTML = '';
+                        caption.textContent = 'Vui lòng chọn ngày đá';
+                        return;
+                    }
 
-            loadBookedSlots();
-        })();
-    </script>
+                    caption.textContent = 'Đang tải danh sách khung giờ...';
+
+                    try {
+                        const response = await fetch(`${slotsUrl}?date=${selectedDate}`, {
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest'
+                            }
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('Không thể tải khung giờ đã đặt.');
+                        }
+
+                        bookedSlots = await response.json();
+                        caption.textContent = bookedSlots.length
+                            ? `Đã cập nhật ${bookedSlots.length} khung giờ đã đặt`
+                            : 'Ngày này đang trống lịch';
+                        renderBookedSlots();
+                        updateSelectOptions();
+                        validateSelectedRange();
+                    } catch (error) {
+                        bookedSlots = [];
+                        slotsContainer.innerHTML = '<span class="slot-chip slot-chip-error">Không tải được lịch đã đặt. Vui lòng thử lại.</span>';
+                        caption.textContent = 'Không thể tải lịch';
+                        validateSelectedRange();
+                    }
+                }
+
+                dateInput.addEventListener('change', loadBookedSlots);
+                startSelect.addEventListener('change', validateSelectedRange);
+                endSelect.addEventListener('change', validateSelectedRange);
+
+                loadBookedSlots();
+            })();
+        </script>
+    </div>
 </body>
 </html>

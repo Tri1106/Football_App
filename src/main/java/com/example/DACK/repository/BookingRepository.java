@@ -2,6 +2,7 @@ package com.example.DACK.repository;
 
 import com.example.DACK.model.Booking;
 import com.example.DACK.model.Booking.BookingStatus;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -9,11 +10,17 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
+    @EntityGraph(attributePaths = {"field", "user"})
     List<Booking> findByUserUsernameOrderByCreatedAtDesc(String username);
 
+    @EntityGraph(attributePaths = {"field", "user"})
     List<Booking> findAllByOrderByCreatedAtDesc();
+
+    @EntityGraph(attributePaths = {"field", "user"})
+    Optional<Booking> findWithFieldAndUserById(Long id);
 
     List<Booking> findByFieldIdAndBookingDateAndStatusInOrderByStartTimeAsc(Long fieldId,
                                                                             LocalDate bookingDate,

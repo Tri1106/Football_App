@@ -37,7 +37,7 @@ public class BookingService {
     }
 
     public Booking getBookingById(Long id) {
-        return bookingRepository.findById(id)
+        return bookingRepository.findWithFieldAndUserById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy đơn đặt sân."));
     }
 

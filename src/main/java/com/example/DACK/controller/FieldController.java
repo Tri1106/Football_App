@@ -43,6 +43,7 @@ public class FieldController {
         model.addAttribute("field", field);
         model.addAttribute("bookingForm", bookingRequest);
         model.addAttribute("today", LocalDate.now());
+        model.addAttribute("bookingDateValue", bookingRequest.getBookingDate().toString());
         return "field_detail";
     }
 
