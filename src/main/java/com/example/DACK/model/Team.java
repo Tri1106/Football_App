@@ -1,6 +1,7 @@
 package com.example.DACK.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Entity
@@ -14,12 +15,13 @@ public class Team {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @NotBlank(message = "Tên đội không được để trống.")
+    @Column(nullable = false, unique = true)
     private String name;
 
     private String logoUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "captain_id")
+    @JoinColumn(name = "captain_id", nullable = false)
     private User captain;
 }
